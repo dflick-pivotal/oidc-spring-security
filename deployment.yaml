@@ -1,0 +1,53 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: oauth2-demo
+  name: oauth2-demo
+  namespace: default
+spec:
+  ports:
+  - port: 8080
+  selector:
+    run: oauth2-demo
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: oauth2-demo
+  name: oauth2-demo
+spec:
+  containers:
+  - env:
+#    - name: JAVA_OPTS
+#      value: "-Dhttp.proxyHost=your-proxy -Dhttp.proxyPort=8080"
+    - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_SCOPE
+      valueFrom:
+        secretKeyRef:
+          name: credentials 
+          key: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_SCOPE
+    - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-ID
+      valueFrom:
+        secretKeyRef:
+          name: credentials 
+          key: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-ID
+    - name: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-SECRET
+      valueFrom:
+        secretKeyRef:
+          name: credentials 
+          key: SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-SECRET
+    - name: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OKTA_ISSUER-URI
+      valueFrom:
+        secretKeyRef:
+          name: credentials 
+          key: SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OKTA_ISSUER-URI
+    image: dflickpivota/oauth2-demo
+    name: oauth2-demo
+    ports:
+    - containerPort: 8080
+    resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

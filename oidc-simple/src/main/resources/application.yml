@@ -1,0 +1,12 @@
+logging:
+  level:
+    org.springframework.security: DEBUG
+    
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"       
+  endpoint:
+    health:
+      show-details: always

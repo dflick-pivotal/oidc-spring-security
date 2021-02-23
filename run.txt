@@ -1,0 +1,11 @@
+# build the image
+./mvnw spring-boot:build-image -Dspring-boot.build-image.imageName=dflickpivota/oauth2-demo -DskipTests
+
+# run in docker
+docker run -e SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_SCOPE=openid -e SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-ID=XXX -e SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-SECRET=XXX -e SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OKTA_ISSUER-URI=https://dev-XXX.okta.com/oauth2/default -p 8080:8080 -t dflickpivota/oauth2-demo
+
+#run in k8s
+kubectl create secret generic credentials --from-literal SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_SCOPE=openid,profile --from-literal SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-ID=XXX --from-literal SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_OKTA_CLIENT-SECRET=XXX --from-literal SPRING_SECURITY_OAUTH2_CLIENT_PROVIDER_OKTA_ISSUER-URI=https://dev-XXX.okta.com/oauth2/default
+kubectl create -f deployment.yaml
+kubectl port-forward svc/oauth2-demo 8080:8080
+
